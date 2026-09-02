@@ -17,10 +17,6 @@ Monitor **temperature, humidity, pH, TDS, and UV** data. Connect to an ESP32. Re
 
 [Overview](#what-is-ecogrid) · [Features](#features) · [Architecture](#architecture) · [Tech Stack](#tech-stack) · [Getting Started](#getting-started)
 
-<br>
-
-<img src="assets/images/img_main_menu_screen.jpg" width="720" alt="EcoGrid mobile application interface" />
-
 </div>
 
 ---
