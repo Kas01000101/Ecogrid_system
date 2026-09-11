@@ -6,9 +6,25 @@ This document consolidates earlier Spanish planning files for the EcoGrid home, 
 
 These notes are historical design context, not a current implementation contract. When they conflict with the Flutter code, the current code is authoritative.
 
+## Historical dashboard refinement
+
+An early dashboard proposal focused on improving the existing interface without introducing new product features. It targeted the active-sensor summary, quick-access controls, and last-update information.
+
+The proposed improvements included:
+
+- clearer text hierarchy and more consistent typography;
+- larger, more accessible touch targets;
+- improved card padding and vertical rhythm;
+- softer shadows and consistent elevation;
+- clearer visual feedback for hover and press states;
+- stronger contrast and screen-reader-friendly controls;
+- responsive spacing on smaller displays.
+
+One early palette experiment used a neutral dashboard treatment with white cards, dark text, gray secondary text, and a blue accent. This was exploratory work and is not the current EcoGrid visual system.
+
 ## Historical quick-access design
 
-Earlier iterations explored a green visual system for the home screen using combinations such as:
+Later iterations explored a green visual system for the home screen using combinations such as:
 
 ```text
 #CEE2BE  light green
@@ -91,8 +107,9 @@ This palette was a proposal, not a repository-wide license to replace the curren
 
 ## Consolidated source files
 
-This historical document replaces the following root-level planning files:
+This historical document replaces the following former root-level planning files:
 
+- `interfaz.md`
 - `ANALISIS_BOTONES_ACCESO_RAPIDO.md`
 - `BOTTOM_NAVIGATION_STRUCTURE.md`
 - `DOC_SENSOR_DASHBOARD_BUTTONS.md`
