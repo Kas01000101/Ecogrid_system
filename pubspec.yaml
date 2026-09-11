@@ -1,5 +1,5 @@
 name: apk_ieee
-description: "A new Flutter project."
+description: "EcoGrid is a Flutter IoT application for ESP32 environmental monitoring, sensor visualization, and PDF/CSV reporting."
 publish_to: 'none'
 version: 0.1.2+2
 
@@ -18,7 +18,7 @@ dependencies:
   printing: ^5.12.0
   flutter_svg: ^2.0.9
 
-  dio: ^5.4.3 
+  dio: ^5.4.3
   path_provider: ^2.1.3
   open_file: ^3.3.2
   csv: ^6.0.0
@@ -33,18 +33,16 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  
+
   assets:
     - assets/images/
     - assets/icons/
-    # Registro explícito de imágenes usadas en el Sensor Dashboard
     - assets/images/sensor_dashboard/s_temp.png
     - assets/images/sensor_dashboard/s_humedad.png
     - assets/images/sensor_dashboard/s_ph.png
     - assets/images/sensor_dashboard/s_tds.png
     - assets/images/sensor_dashboard/s_uv.png
 
-# Configuración de flutter_launcher_icons
 flutter_launcher_icons:
   android: true
   ios: true
