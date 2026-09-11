@@ -2,17 +2,17 @@
 
 <img src="assets/icons/ecogrid.png" width="112" alt="EcoGrid logo" />
 
-# EcoGrid
+# EcoGrid System
 
-### Environmental IoT monitoring from ESP32 to mobile insight
+### From environmental sensors to clear mobile insight.
 
-**EcoGrid is an open-source Flutter application for monitoring environmental sensor data, managing ESP32 connectivity, exploring measurement history, and exporting field data as PDF or CSV.**
+**EcoGrid System is an open-source Flutter IoT application that connects environmental sensing with mobile monitoring, historical analysis, and field-ready reporting.**
 
 [![Flutter](https://img.shields.io/badge/Flutter-Mobile-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
 [![Dart](https://img.shields.io/badge/Dart-3.9%2B-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev/)
 [![ESP32](https://img.shields.io/badge/ESP32-IoT-111111?style=for-the-badge)](https://www.espressif.com/en/products/socs/esp32)
 [![Android](https://img.shields.io/badge/Android-Primary_Target-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://www.android.com/)
-[![License](https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge)](LICENSE)
+[![Open Source](https://img.shields.io/badge/Open_Source-MIT-22C55E?style=for-the-badge)](OPEN_SOURCE.md)
 
 </div>
 
@@ -20,81 +20,123 @@
 
 ## Overview
 
-EcoGrid is a mobile interface for an environmental IoT sensing system built around **ESP32 devices and five monitored variables: temperature, humidity, pH, TDS, and UV**.
+EcoGrid System is the mobile layer of an environmental IoT monitoring workflow built around **ESP32 devices** and five environmental variables: **temperature, humidity, pH, TDS, and UV**.
 
-The application is designed to make sensor data useful beyond raw readings. It combines device configuration, live measurement retrieval, individual sensor views, historical exploration, connection-state management, and report generation in one Flutter application.
+The application turns raw sensor readings into a usable monitoring experience. It combines device connectivity, live measurements, dedicated sensor views, historical data exploration, connection-state management, and PDF/CSV export in a single Flutter application.
 
-The repository contains the **mobile application**. ESP32 firmware and the external data backend are separate components and are not maintained here.
+The repository contains the **Flutter mobile client**. ESP32 firmware, hosted APIs, and external data infrastructure are separate components and are not maintained in this repository.
+
+<p align="center">
+  <img src="assets/images/img_main_menu_screen.jpg" width="760" alt="EcoGrid application interface" />
+</p>
 
 ## At a glance
 
 | | |
 | --- | --- |
-| **Platform** | Flutter mobile application |
-| **Primary target** | Android |
-| **IoT device** | ESP32 |
-| **Monitored signals** | Temperature, humidity, pH, TDS, UV |
-| **Transport** | HTTP polling over local network or external API |
-| **Foreground refresh** | Approximately every 58 seconds |
+| **Product** | Mobile environmental IoT monitoring application |
+| **Primary platform** | Android |
+| **IoT hardware** | ESP32 |
+| **Monitored variables** | Temperature, humidity, pH, TDS, UV |
+| **Connectivity** | HTTP polling from ESP32 or external API |
+| **Live refresh** | Approximately every 58 seconds in foreground |
 | **Background refresh** | Approximately every 5 minutes |
-| **Recovery** | Up to 5 retries with exponential backoff |
-| **Historical export** | PDF and CSV |
+| **Historical reporting** | PDF and CSV export |
 | **Charts** | `fl_chart` |
 | **Navigation** | GoRouter |
+| **Framework** | Flutter + Dart |
 | **License** | MIT |
 
-## Core capabilities
+## What EcoGrid does
 
-### Environmental sensor dashboard
+### Monitor five environmental variables
 
-EcoGrid provides a single dashboard for five environmental measurements:
+EcoGrid presents a unified dashboard for five sensing domains:
 
-| Signal | Role |
+| Signal | Purpose |
 | --- | --- |
-| **Temperature** | Environmental temperature monitoring |
-| **Humidity** | Relative humidity monitoring |
-| **pH** | Acidity and alkalinity measurements |
-| **TDS** | Total dissolved solids monitoring |
-| **UV** | Ultraviolet exposure monitoring |
+| **Temperature** | Monitor environmental temperature |
+| **Humidity** | Track relative humidity |
+| **pH** | Observe acidity and alkalinity |
+| **TDS** | Monitor total dissolved solids |
+| **UV** | Track ultraviolet exposure |
 
-Each signal can be opened in a dedicated detail view for deeper inspection.
+Each sensor can be opened in a dedicated detail view for closer inspection.
 
-### ESP32 and API connectivity
+### Connect to an ESP32 or external API
 
-The application can retrieve measurements from either:
+The connection layer can consume measurements from either:
 
-- a configured **ESP32 address** on the local network; or
-- an **external HTTP API**, including the Google Apps Script endpoint used by the current reporting flow.
+- a configured **ESP32 address** reachable over the local network; or
+- an **external HTTP API** that exposes the sensor data flow.
 
-`ConnectionManager` centralizes connection state, polling, retries, status streams, and lifecycle-aware refresh behavior.
+The application centralizes this behavior in `ConnectionManager`, rather than coupling network logic directly to every screen.
 
-### Lifecycle-aware polling
+### Adapt polling to the application lifecycle
 
-EcoGrid does not poll at the same frequency indefinitely. The connection layer adapts its update interval according to the application lifecycle:
+EcoGrid adjusts its polling behavior depending on whether the app is in the foreground or background.
 
 ```text
-Foreground    ~58 seconds
-Background    ~5 minutes
-Timeout       10 seconds per request
-Retries       Up to 5 attempts
-Recovery      Exponential backoff
-Transport     HTTP polling
+Foreground refresh   ~58 seconds
+Background refresh   ~5 minutes
+Request timeout      10 seconds
+Retry attempts       Up to 5
+Retry strategy       Exponential backoff
+Transport            HTTP polling
 ```
 
-This keeps measurements reasonably fresh while reducing unnecessary background activity.
+The active implementation also exposes explicit connection states:
 
-### Historical reporting
+```text
+disconnected
+connecting
+connected
+reconnecting
+error
+```
 
-The report flow supports date-based historical queries and export to:
+This allows the UI to represent connectivity as a first-class application state instead of treating network failures as missing sensor data.
+
+### Explore historical measurements
+
+The reporting flow supports date-based historical queries so users can inspect measurements beyond the latest reading.
+
+### Export field data
+
+Historical information can be exported as:
 
 - formatted **PDF reports**;
 - raw **CSV datasets**.
 
-The generated files can be stored, opened, or shared through the platform-specific file utilities included in the project.
+Generated files can be saved, opened, or shared through the platform utilities used by the application.
 
-### Image records
+### Manage visual records
 
-EcoGrid also includes an image gallery and image-detail flow for visual records exposed through the application.
+EcoGrid also includes an image gallery and image-detail flow for visual records available through the application.
+
+## Data flow
+
+```mermaid
+flowchart LR
+    A[Environmental Sensors] --> B[ESP32]
+    B -->|HTTP over local network| C[ConnectionManager]
+    D[External HTTP API] --> C
+    C --> E[Live Sensor Dashboard]
+    C --> F[Sensor Detail Views]
+    D --> G[Historical Data]
+    G --> H[PDF Reports]
+    G --> I[CSV Exports]
+    E --> J[Flutter UI]
+    F --> J
+    H --> J
+    I --> J
+```
+
+The result is a simple pipeline:
+
+```text
+Sense → Connect → Monitor → Review → Export
+```
 
 ## Application flow
 
@@ -114,25 +156,7 @@ flowchart TD
     B --> M[About]
 ```
 
-The Flutter router exposes dedicated flows for authentication screens, device configuration, sensor monitoring, image records, connection management, notifications, and project information.
-
-## System architecture
-
-```mermaid
-flowchart LR
-    S[Environmental Sensors] --> E[ESP32]
-    E -->|HTTP / local network| C[ConnectionManager]
-    X[External Data API] -->|HTTP| C
-    C --> D[Sensor Dashboard]
-    C --> V[Sensor Detail]
-    X --> R[Historical Reports]
-    D --> U[Flutter UI]
-    V --> U
-    R --> U
-    U --> P[PDF / CSV Files]
-```
-
-The application separates UI, stateful screens, models, services, utilities, and reusable widgets. The connection service exposes data and connection-status streams rather than coupling network logic directly to every screen.
+The router separates authentication, configuration, monitoring, reporting, gallery, connectivity, notifications, and project-information flows into dedicated screens.
 
 ## Engineering highlights
 
@@ -140,46 +164,41 @@ The application separates UI, stateful screens, models, services, utilities, and
 
 `ConnectionManager` is implemented as a shared service responsible for:
 
-- choosing the active HTTP source;
-- performing sensor requests;
+- selecting the active data source;
+- performing HTTP polling;
+- publishing sensor data through streams;
 - publishing connection-state changes;
-- publishing incoming data through streams;
-- manual refresh;
-- reconnection;
+- manual refresh and reconnection;
 - lifecycle-aware polling;
+- timeout handling;
+- bounded retry attempts;
 - exponential retry delays.
 
-### Explicit connection states
+### Lifecycle-aware networking
 
-The runtime models the connection lifecycle as:
+The application reduces background network activity by switching from the normal foreground update interval to a longer background interval when appropriate.
 
-```text
-disconnected
-connecting
-connected
-reconnecting
-error
-```
+### Clear separation of concerns
 
-This makes the UI able to communicate connectivity instead of treating network failures as silent sensor failures.
-
-### Separation of concerns
-
-The project is organized around focused layers:
+The repository is organized around focused layers:
 
 ```text
 Flutter UI
    |
 Screens and reusable widgets
    |
-Services and application lifecycle
+Services and lifecycle management
    |
 ConnectionManager
    |
-HTTP API / ESP32
+ESP32 / External HTTP API
 ```
 
-Reporting and file operations are handled independently through utility and platform-specific helpers.
+Reporting and platform file operations are handled independently through utility classes and platform-aware helpers.
+
+### Export-oriented workflow
+
+The system does not stop at visualization. PDF and CSV generation make collected measurements portable for review, documentation, and downstream analysis.
 
 ## Technology stack
 
@@ -187,9 +206,9 @@ Reporting and file operations are handled independently through utility and plat
 | --- | --- |
 | **Framework** | Flutter |
 | **Language** | Dart 3.9+ |
-| **UI system** | Material 3 |
+| **UI** | Material 3 |
 | **Navigation** | GoRouter |
-| **HTTP networking** | `http`, Dio |
+| **Networking** | `http`, Dio |
 | **Local preferences** | SharedPreferences |
 | **Charts** | `fl_chart` |
 | **PDF generation** | `pdf`, `printing` |
@@ -202,42 +221,39 @@ Reporting and file operations are handled independently through utility and plat
 
 Current application version: **0.1.2+2**.
 
-## Project structure
+## Repository structure
 
 ```text
 Ecogrid_system/
 ├── android/              Android platform configuration
 ├── assets/               Application images and icons
 ├── lib/
-│   ├── components/       Reusable UI and connection-status components
+│   ├── components/       Reusable UI and connection-state components
 │   ├── constants/        Shared configuration and constants
-│   ├── models/           Application data models
+│   ├── models/           Data models
 │   ├── screens/          Authentication, home, sensors, reports and gallery
 │   ├── services/         Connectivity and lifecycle management
 │   ├── styles/           Shared visual system
-│   ├── utils/            PDF, file and platform utilities
-│   └── widgets/          Reusable navigation and interface widgets
-├── test/                  Widget and behavior tests
-└── pubspec.yaml           Flutter dependencies and application metadata
+│   ├── utils/            Reporting, file and platform utilities
+│   └── widgets/          Reusable navigation and UI widgets
+├── test/                  Flutter widget and behavior tests
+└── pubspec.yaml           Dependencies and application metadata
 ```
 
 ## Testing
 
-The repository includes Flutter tests covering areas such as:
-
-- navigation rules;
-- device configuration;
-- report date ranges;
-- sensor-dashboard navigation;
-- UI styling contracts;
-- time validation;
-- PDF/file behavior;
-- project information screens.
+The repository includes Flutter tests covering application behavior such as navigation, device configuration, reporting, sensor-dashboard routing, UI contracts, time validation, file behavior, and project-information screens.
 
 Run the test suite with:
 
 ```bash
 flutter test
+```
+
+Static analysis:
+
+```bash
+flutter analyze
 ```
 
 ## Getting started
@@ -248,7 +264,7 @@ flutter test
 - Dart SDK compatible with **3.9.2+**
 - Android SDK
 - Android Studio or VS Code with Flutter tooling
-- a compatible Java JDK for the Android Gradle toolchain
+- compatible Java JDK for the Android Gradle toolchain
 
 ### Clone and install
 
@@ -274,31 +290,38 @@ flutter pub get
 flutter build apk --release
 ```
 
-Output:
+Release output:
 
 ```text
 build/app/outputs/flutter-apk/app-release.apk
 ```
 
-## Configuration notes
+## Configuration and security
 
-The current application can consume both an external API and direct ESP32 endpoints. Environment-specific addresses should be reviewed before distributing a build outside the original deployment environment.
+EcoGrid can consume both external HTTP APIs and direct ESP32 endpoints. Environment-specific URLs and device addresses should be reviewed before distributing a build outside its original deployment environment.
 
-Android signing credentials such as keystores and `key.properties` must remain outside version control.
+Do not commit:
 
-The backend/API and ESP32 firmware are intentionally outside the scope of this repository.
+- API keys or private tokens;
+- ESP32 credentials;
+- Android signing keys or keystores;
+- `key.properties` containing secrets;
+- personal data or private datasets;
+- production-only environment configuration.
+
+The external backend and ESP32 firmware remain outside the scope of this repository.
 
 ## Open source
 
-EcoGrid is open source under the **MIT License**. You may use, study, modify, distribute, and build on the software subject to the terms in [`LICENSE`](LICENSE).
+EcoGrid System is open-source software under the **MIT License**.
 
-See [`OPEN_SOURCE.md`](OPEN_SOURCE.md) for the repository-wide open-source policy and [`CONTRIBUTING.md`](CONTRIBUTING.md) before submitting changes.
+You may use, study, modify, distribute, sublicense, and build on the source code subject to the license terms. See [`LICENSE`](LICENSE) and [`OPEN_SOURCE.md`](OPEN_SOURCE.md).
 
 Third-party packages and assets remain subject to their respective licenses and attribution requirements.
 
 ## Contributing
 
-Contributions are welcome. Before opening a pull request:
+Contributions are welcome. Before opening a pull request, run:
 
 ```bash
 flutter pub get
@@ -306,16 +329,18 @@ flutter analyze
 flutter test
 ```
 
-Do not commit private API credentials, device secrets, signing keys, personal data, or local environment files.
+Then review [`CONTRIBUTING.md`](CONTRIBUTING.md) for repository guidelines.
 
 ## Project status
 
-EcoGrid is a **functional mobile IoT application** with implemented sensor monitoring, connection management, reporting, navigation, and test coverage. The mobile client is maintained independently from its external backend and ESP32 firmware.
+EcoGrid System is a **functional mobile IoT application** with implemented environmental monitoring, connection management, historical reporting, file export, navigation, and automated test coverage.
+
+The mobile client is maintained independently from the external backend and ESP32 firmware so each layer of the wider IoT system can evolve separately.
 
 ---
 
 <div align="center">
 
-**EcoGrid · Monitor · Understand · Report**
+**EcoGrid System · Sense · Monitor · Understand · Report**
 
 </div>
