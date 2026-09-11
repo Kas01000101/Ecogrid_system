@@ -227,6 +227,7 @@ Current application version: **0.1.2+2**.
 Ecogrid_system/
 ├── android/              Android platform configuration
 ├── assets/               Application images and icons
+├── docs/                 Maintained English technical documentation
 ├── lib/
 │   ├── components/       Reusable UI and connection-state components
 │   ├── constants/        Shared configuration and constants
@@ -239,6 +240,19 @@ Ecogrid_system/
 ├── test/                  Flutter widget and behavior tests
 └── pubspec.yaml           Dependencies and application metadata
 ```
+
+## Documentation
+
+The maintained technical documentation is organized under [`docs/`](docs/README.md):
+
+- [`ARCHITECTURE.md`](docs/ARCHITECTURE.md) — application architecture and layer responsibilities;
+- [`CONNECTIVITY.md`](docs/CONNECTIVITY.md) — polling, retries, lifecycle behavior, and troubleshooting;
+- [`DATA_CONTRACTS.md`](docs/DATA_CONTRACTS.md) — sensor data contracts and integration boundaries;
+- [`NAVIGATION.md`](docs/NAVIGATION.md) — current routes and screen responsibilities;
+- [`IMPLEMENTATION_STATUS.md`](docs/IMPLEMENTATION_STATUS.md) — current implementation status;
+- [`UI_HISTORY.md`](docs/UI_HISTORY.md) — consolidated historical UI design notes.
+
+Historical Spanish planning files were consolidated into these maintained English documents so the repository has a single, current documentation path.
 
 ## Testing
 
